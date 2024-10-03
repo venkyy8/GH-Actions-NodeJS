@@ -16,6 +16,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Step 4 - List files in spring-boot-mongo-docker directory
+        run: |
+          cd spring-boot-mongo-docker
+          ls -al
     
       - name: Step 3 - Build Maven Project
         run: |
