@@ -18,7 +18,7 @@ jobs:
           java-version: 1.8
       - name: Step 4 - List files in spring-boot-mongo-docker directory
         run: |
-          cd spring-boot-mongo-docker
+          cd /home/runner/work/GitHub-Actions/GitHub-Actions/spring-boot-mongo-docker/pom.xml
           ls -al
     
       - name: Step 3 - Build Maven Project
