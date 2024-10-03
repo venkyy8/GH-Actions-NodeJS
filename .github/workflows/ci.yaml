@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI Pipeline
 
 on:
   push:
@@ -13,26 +13,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '8' # Specify the Java version
-          distribution: 'adopt' # Specify the JDK distribution
+          java-version: '11' # Specify the Java version you need
 
-      - name: List files in spring-boot-mongo-docker
-        run: ls -la spring-boot-mongo-docker # List the contents of the directory
+      - name: Compile Java application
+        run: javac HelloWorld.java
 
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
-        working-directory: spring-boot-mongo-docker # Ensure it points to the correct directory
-
-      - name: Build Docker image
-        run: docker build -t spring-boot-mongo-app .
-        working-directory: spring-boot-mongo-docker # Ensure it points to the correct directory
-
-      - name: Run Docker container
-        run: docker run -d -p 8080:8080 spring-boot-mongo-app
-        working-directory: spring-boot-mongo-docker # Ensure it points to the correct directory
+      - name: Run Java application
+        run: java HelloWorld
