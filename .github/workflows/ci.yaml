@@ -21,7 +21,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '8' # Make sure this matches your Dockerfile
+          java-version: '8' # Specify the Java version
+          distribution: 'adopt' # Specify the JDK distribution
 
       - name: Build with Maven
         run: |
