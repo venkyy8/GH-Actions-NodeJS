@@ -27,8 +27,8 @@ jobs:
 
       - name: Step 5 - Install Ngrok
         run: |
-          # Download and unzip the latest ngrok
-          curl -s https://bin.equinox.io/c/111111/ngrok-stable-linux-amd64.zip -o ngrok.zip
+          # Download ngrok
+          curl -s https://bin.equinox.io/c/111111/ngrok-stable-linux-amd64.zip --output ngrok.zip
           unzip ngrok.zip
           sudo mv ngrok /usr/local/bin
           rm ngrok.zip
