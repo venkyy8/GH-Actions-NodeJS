@@ -24,11 +24,12 @@ jobs:
       - name: Step 4 - Navigate to spring-boot-mongo-docker directory and list files
         run: |
           cd spring-boot-mongo-docker
-          ls -al
+          ls -al || echo "No files found in spring-boot-mongo-docker"
 
       - name: Step 5 - Change permissions for pom.xml
         run: |
-          chmod 777 spring-boot-mongo-docker/pom.xml
+          cd spring-boot-mongo-docker
+          chmod 777 pom.xml
 
       - name: Step 6 - Build Maven Project
         run: |
@@ -38,4 +39,4 @@ jobs:
       - name: Step 7 - List files in spring-boot-mongo-docker directory after build
         run: |
           cd spring-boot-mongo-docker
-          ls -al
+          ls -al || echo "No files found in spring-boot-mongo-docker"
