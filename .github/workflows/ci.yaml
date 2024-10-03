@@ -27,7 +27,10 @@ jobs:
 
       - name: Step 5 - Install Ngrok
         run: |
-          wget -qO - https://bin.equinox.io/c/111111/ngrok-stable-linux-amd64.zip | unzip - -d /usr/local/bin
+          wget -qO ngrok.zip https://bin.equinox.io/c/111111/ngrok-stable-linux-amd64.zip
+          unzip ngrok.zip
+          sudo mv ngrok /usr/local/bin
+          rm ngrok.zip
 
       - name: Step 6 - Run the Spring Boot Application
         run: |
