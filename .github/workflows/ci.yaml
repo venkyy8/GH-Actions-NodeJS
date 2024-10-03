@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-on-ubuntu:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,6 +25,19 @@ jobs:
         run: |
           mvn -B package --file pom.xml
 
-      - name: Step 5 - List files in the root directory after build
+      - name: Step 5 - Run the Spring Boot Application
+        run: |
+          java -jar target/*.jar &  # Run the JAR file without specifying the full name
+          sleep 10  # Wait for the application to start
+
+      - name: Step 6 - List files in the root directory after build
         run: |
           ls -al
+
+      - name: Step 7 - Check Application Status
+        run: |
+          curl -f http://localhost:8080 || exit 1  # Check if the application is accessible
+
+      - name: Step 8 - Notify about the application URL
+        run: |
+          echo "The application is running at http://localhost:8080"
