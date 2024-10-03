@@ -3,8 +3,8 @@ name: GitHub Actions Maven Build Example
 on:
   push:
     branches: [ main ]
-jobs:
 
+jobs:
   build-on-ubuntu:
     runs-on: ubuntu-latest
 
@@ -23,17 +23,8 @@ jobs:
     
       - name: Step 4 - Build Maven Project
         run: |
-          cd spring-boot-mongo-docker
           mvn -B package --file pom.xml
 
-      - name: Step 5 - List files in spring-boot-mongo-docker directory after build
+      - name: Step 5 - List files in the root directory after build
         run: |
-          cd spring-boot-mongo-docker
           ls -al
-
-          
-
-
-          
-          
-          
