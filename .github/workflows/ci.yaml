@@ -27,17 +27,23 @@ jobs:
 
       - name: Step 5 - Run the Spring Boot Application
         run: |
-          java -jar target/*.jar &  # Run the JAR file without specifying the full name
+          java -jar target/*.jar &  # Run the JAR file
           sleep 10  # Wait for the application to start
 
-      - name: Step 6 - List files in the root directory after build
+      - name: Step 6 - Start Ngrok
         run: |
-          ls -al
+          nohup ngrok http 8080 &  # Start ngrok in the background
 
-      - name: Step 7 - Check Application Status
+      - name: Step 7 - Wait for Ngrok to initialize
         run: |
-          curl -f http://localhost:8080 || exit 1  # Check if the application is accessible
+          sleep 10  # Wait for ngrok to set up
 
-      - name: Step 8 - Notify about the application URL
+      - name: Step 8 - Get Ngrok URL
+        id: ngrok
         run: |
-          echo "The application is running at http://localhost:8080"
+          curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url' > ngrok_url.txt
+          cat ngrok_url.txt
+
+      - name: Step 9 - Output Ngrok URL
+        run: |
+          echo "The application is accessible at $(cat ngrok_url.txt)"
