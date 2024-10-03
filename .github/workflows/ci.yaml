@@ -23,8 +23,7 @@ jobs:
     
       - name: Step 4 - Build Maven Project
         run: |
-          cd spring-boot-mongo-docker
-          mvn -B package --file pom.xml
+          mvn -B package --file spring-boot-mongo-docker/pom.xml
 
       - name: Step 5 - List files in spring-boot-mongo-docker directory after build
         run: |
