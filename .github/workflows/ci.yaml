@@ -12,21 +12,21 @@ jobs:
       - name: Step 1 - Checkout main branch from GitHub 
         uses: actions/checkout@v2
 
-      - name: Step 2 - Set up JDK 1.8
+      - name: Step 2 - List all files in the repository after checkout
+        run: |
+          ls -al
+
+      - name: Step 3 - Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Step 4 - List files in spring-boot-mongo-docker directory
-        run: |
-          cd /home/runner/work/GitHub-Actions/GitHub-Actions/spring-boot-mongo-docker/
-          ls -al
     
-      - name: Step 3 - Build Maven Project
+      - name: Step 4 - Build Maven Project
         run: |
           cd spring-boot-mongo-docker
           mvn -B package --file pom.xml
 
-      - name: Step 4 - List files in spring-boot-mongo-docker directory
+      - name: Step 5 - List files in spring-boot-mongo-docker directory after build
         run: |
           cd spring-boot-mongo-docker
           ls -al
