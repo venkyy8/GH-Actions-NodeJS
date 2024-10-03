@@ -24,12 +24,12 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean package -DskipTests
-        working-directory: spring-boot-mongo-docker # Use the path directly
+        working-directory: spring-boot-mongo-docker # Ensure it points to the correct directory
 
       - name: Build Docker image
         run: docker build -t spring-boot-mongo-app .
-        working-directory: spring-boot-mongo-docker # Use the path directly
+        working-directory: spring-boot-mongo-docker # Ensure it points to the correct directory
 
       - name: Run Docker container
         run: docker run -d -p 8080:8080 spring-boot-mongo-app
-        working-directory: spring-boot-mongo-docker # Use the path directly
+        working-directory: spring-boot-mongo-docker # Ensure it points to the correct directory
