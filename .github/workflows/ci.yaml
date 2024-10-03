@@ -20,30 +20,35 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-    
+
       - name: Step 4 - Build Maven Project
         run: |
           mvn -B package --file pom.xml
 
-      - name: Step 5 - Run the Spring Boot Application
+      - name: Step 5 - Install Ngrok
+        run: |
+          wget -qO - https://bin.equinox.io/c/111111/ngrok-stable-linux-amd64.zip | unzip - -d /usr/local/bin
+
+      - name: Step 6 - Run the Spring Boot Application
         run: |
           java -jar target/*.jar &  # Run the JAR file
           sleep 10  # Wait for the application to start
 
-      - name: Step 6 - Start Ngrok
+      - name: Step 7 - Start Ngrok
         run: |
           nohup ngrok http 8080 &  # Start ngrok in the background
 
-      - name: Step 7 - Wait for Ngrok to initialize
+      - name: Step 8 - Wait for Ngrok to initialize
         run: |
           sleep 10  # Wait for ngrok to set up
 
-      - name: Step 8 - Get Ngrok URL
+      - name: Step 9 - Get Ngrok URL
         id: ngrok
         run: |
+          sleep 5  # Give ngrok time to start
           curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url' > ngrok_url.txt
-          cat ngrok_url.txt
+          cat ngrok_url.txt || echo "No URL found"
 
-      - name: Step 9 - Output Ngrok URL
+      - name: Step 10 - Output Ngrok URL
         run: |
-          echo "The application is accessible at $(cat ngrok_url.txt)"
+          echo "The application is accessible at $(cat ngrok_url.txt || echo 'No URL found')"
