@@ -20,22 +20,20 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-
-      - name: Step 4 - List contents of the spring-boot-mongo-docker directory
-        run: |
-          echo "Contents of spring-boot-mongo-docker:"
-          ls -al spring-boot-mongo-docker
-
-      - name: Step 5 - Change permissions for pom.xml
-        run: |
-          chmod 777 spring-boot-mongo-docker/pom.xml
-
-      - name: Step 6 - Build Maven Project
+    
+      - name: Step 4 - Build Maven Project
         run: |
           cd spring-boot-mongo-docker
           mvn -B package --file pom.xml
 
-      - name: Step 7 - List files in spring-boot-mongo-docker directory after build
+      - name: Step 5 - List files in spring-boot-mongo-docker directory after build
         run: |
-          echo "Listing files in spring-boot-mongo-docker after build:"
-          ls -al spring-boot-mongo-docker
+          cd spring-boot-mongo-docker
+          ls -al
+
+          
+
+
+          
+          
+          
