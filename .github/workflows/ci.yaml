@@ -22,6 +22,9 @@ jobs:
           java-version: '8' # Specify the Java version
           distribution: 'adopt' # Specify the JDK distribution
 
+      - name: List files in spring-boot-mongo-docker
+        run: ls -la spring-boot-mongo-docker # List the contents of the directory
+
       - name: Build with Maven
         run: mvn clean package -DskipTests
         working-directory: spring-boot-mongo-docker # Ensure it points to the correct directory
