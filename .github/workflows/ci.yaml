@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the target repository
+      - name: Checkout the repository
         uses: actions/checkout@v2
 
       - name: Set up JDK
@@ -23,15 +23,13 @@ jobs:
           distribution: 'adopt' # Specify the JDK distribution
 
       - name: Build with Maven
-        run: |
-          mvn clean package -DskipTests
-        working-directory: ./spring-boot-mongo-docker # Adjust this path if needed
+        run: mvn clean package -DskipTests
+        working-directory: ./spring-boot-mongo-docker # Use the correct directory
 
       - name: Build Docker image
-        run: |
-          docker build -t spring-boot-mongo-app .
-        working-directory: ./spring-boot-mongo-docker # Adjust this path if needed
+        run: docker build -t spring-boot-mongo-app .
+        working-directory: ./spring-boot-mongo-docker # Use the correct directory
 
       - name: Run Docker container
-        run: |
-          docker run -d -p 8080:8080 spring-boot-mongo-app
+        run: docker run -d -p 8080:8080 spring-boot-mongo-app
+        working-directory: ./spring-boot-mongo-docker # Use the correct directory
