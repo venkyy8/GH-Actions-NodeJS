@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-    
+
       - name: Step 4 - Build Maven Project
         run: |
           mvn -B package --file pom.xml
@@ -30,3 +30,20 @@ jobs:
       - name: Step 6 - List files in the target directory
         run: |
           ls -al target
+
+      - name: Step 7 - Deploy to Tomcat on EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          HOST: 54.89.24.4  # Replace with your EC2 instance IP
+          USER: root  # Use 'root' since your public key is in /root/.ssh/authorized_keys
+          ARTIFACT_PATH: target/spring-boot-mongo-1.0.jar  # Replace with your actual artifact name
+        run: |
+          # Create SSH key file
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+
+          # Copy the artifact to the EC2 instance
+          scp -o StrictHostKeyChecking=no -i private_key.pem $ARTIFACT_PATH $USER@$HOST:/opt/
+
+          # Optionally restart Tomcat (assuming systemctl is used)
+          #ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'sudo systemctl restart tomcat'
