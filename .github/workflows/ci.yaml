@@ -1,49 +1,70 @@
+name: Build and Analyze
+
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build-on-ubuntu:
+  build-and-analyze:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Step 1 - Checkout main branch from GitHub 
+      - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Step 2 - List all files in the repository after checkout
+      - name: List all files in the repository after checkout
         run: |
           ls -la
 
-      - name: Step 3 - Set up JDK 1.8
+      - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 11
 
-      - name: Step 4 - Build Maven Project
-        run: |
-          mvn -B package --file pom.xml
+      - name: Cache SonarQube packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
 
-      - name: Step 5 - List files in the root directory after build
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=githubactions-1
+
+      - name: List files in the root directory after build
         run: |
           ls -al
 
-      - name: Step 6 - List files in the target directory
+      - name: List files in the target directory
         run: |
           ls -al target
 
-      - name: Step 7 - Deploy to Tomcat on EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          HOST: 54.89.24.4  # Replace with your EC2 instance IP
-          USER: root  # Use 'root' since your public key is in /root/.ssh/authorized_keys
-          ARTIFACT_PATH: target/spring-boot-mongo-1.0.jar  # Replace with your actual artifact name
-        run: |
+      # - name: Deploy to Tomcat on EC2
+      #   env:
+      #     PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+      #     HOST: 54.89.24.4  # Replace with your EC2 instance IP
+      #     USER: ubuntu  # Use 'root' since your public key is in /root/.ssh/authorized_keys
+      #     ARTIFACT_PATH: target/spring-boot-mongo-1.0.jar  # Replace with your actual artifact name
+      #   run: |
           # Create SSH key file
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
+          # echo "$PRIVATE_KEY" > private_key.pem
+          # chmod 600 private_key.pem
 
           # Copy the artifact to the EC2 instance
-          scp -o StrictHostKeyChecking=no -i private_key.pem $ARTIFACT_PATH $USER@$HOST:/opt/
+          #scp -o StrictHostKeyChecking=no -i private_key.pem $ARTIFACT_PATH $USER@$HOST:/opt/
 
           # Optionally restart Tomcat (assuming systemctl is used)
-          #ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'sudo systemctl restart tomcat'
+          # ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'sudo systemctl restart tomcat'
