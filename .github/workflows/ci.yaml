@@ -1,11 +1,9 @@
-name: GitHub Actions Maven Build Example
-
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  build-on-ubuntu:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,11 +18,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-
+    
       - name: Step 4 - Build Maven Project
         run: |
           mvn -B package --file pom.xml
 
-      - name: Step 5 - List files in the target directory after build
+      - name: Step 5 - List files in the root directory after build
         run: |
-          ls -al target
+          ls -al
