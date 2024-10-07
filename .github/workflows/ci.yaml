@@ -26,3 +26,7 @@ jobs:
       - name: Step 5 - List files in the root directory after build
         run: |
           ls -al
+          
+      - name: Step 6 - List files in the target directory
+        run: |
+          ls -al target
