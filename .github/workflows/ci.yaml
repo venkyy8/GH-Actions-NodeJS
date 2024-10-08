@@ -33,7 +33,7 @@ jobs:
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         run: |
-          mvn deploy:deploy-file \
+          mvn -X deploy:deploy-file \
             -DgroupId=org.springframework.boot \
             -DartifactId=spring-boot-mongo \
             -Dversion=1.0 \
@@ -42,3 +42,4 @@ jobs:
             -DrepositoryId=githubactions \
             -Durl=http://3.84.58.7:8081/repository/githubactions/ \
             -DgeneratePom=true
+
