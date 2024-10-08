@@ -27,18 +27,23 @@ jobs:
         run: |
           ls -al
 
-      - name: Step 6 - Build Docker Image
-        run: |
-          docker build -t venkyy82/kubernetes:12 .
+      - name: Step 6 - Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      - name: Step 7 - Docker Login
+      - name: Step 7 - Login to Amazon ECR
+        env:
+          AWS_REGION: us-east-1  # Change to your desired region
         run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          echo "${{ secrets.AWS_ACCESS_KEY_ID }}" | aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin <your_account_id>.dkr.ecr.$AWS_REGION.amazonaws.com
 
-      - name: Step 8 - Push Docker Image to Repository
+      - name: Step 8 - Build Docker Image
         run: |
-          docker push venkyy82/kubernetes:12
+          docker build -t 508511762335.dkr.ecr.$AWS_REGION.amazonaws.com/github-action-ecr:latest .
 
-      - name: Step 9 - List Docker Images
+      - name: Step 9 - Push Docker Image to ECR
+        run: |
+          docker push 508511762335.dkr.ecr.$AWS_REGION.amazonaws.com/github-action-ecr:latest
+
+      - name: Step 10 - List Docker Images
         run: |
           docker images
