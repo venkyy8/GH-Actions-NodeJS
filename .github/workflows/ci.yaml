@@ -29,8 +29,16 @@ jobs:
 
       - name: Step 6 - Build Docker Image
         run: |
-          docker build -t github-spring:latest .
+          docker build -t venkyy82/kubernetes:12 .
 
-      - name: Step 7 - List Docker Images
+      - name: Step 7 - Docker Login
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Step 8 - Push Docker Image to Repository
+        run: |
+          docker push venkyy82/kubernetes:12
+
+      - name: Step 9 - List Docker Images
         run: |
           docker images
