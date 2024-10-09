@@ -27,7 +27,11 @@ jobs:
         run: |
           ls -al
 
-      - name: Step 6 - Dependency Check with OSWAP
+      - name: Step 6 - Install OSWAP
         run: |
-          # Make sure to replace `oswap` with the actual command for your OSWAP setup
+          sudo apt-get update
+          sudo apt-get install -y oswap # Replace with the actual installation command for OSWAP if different
+
+      - name: Step 7 - Dependency Check with OSWAP
+        run: |
           oswap check --file pom.xml
