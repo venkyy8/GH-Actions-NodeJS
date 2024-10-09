@@ -27,11 +27,12 @@ jobs:
         run: |
           ls -al
 
-      - name: Step 6 - Install OSWAP
+      - name: Step 6 - Install OWASP Dependency-Check
         run: |
-          sudo apt-get update
-          sudo apt-get install -y oswap # Replace with the actual installation command for OSWAP if different
+          curl -LJO https://dl.bintray.com/jeremyh/owasp/dependency-check-cli-7.1.1-release.zip
+          unzip dependency-check-cli-7.1.1-release.zip
+          mv dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
 
-      - name: Step 7 - Dependency Check with OSWAP
+      - name: Step 7 - Run Dependency Check
         run: |
-          oswap check --file pom.xml
+          dependency-check --project "My Project" --scan . --format ALL
