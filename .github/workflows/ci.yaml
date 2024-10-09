@@ -29,9 +29,10 @@ jobs:
 
       - name: Step 6 - Install OWASP Dependency-Check
         run: |
-          # Download the latest release
-          curl -LJO https://github.com/jeremylong/dependency-check-bin/releases/latest/download/dependency-check-7.5.0-release.zip
-          unzip dependency-check-7.5.0-release.zip
+          # Fetch the latest version dynamically
+          VERSION=$(curl -s https://api.github.com/repos/jeremylong/dependency-check-bin/releases/latest | jq -r .tag_name)
+          curl -LJO "https://github.com/jeremylong/dependency-check-bin/releases/latest/download/dependency-check-${VERSION}.zip"
+          unzip "dependency-check-${VERSION}.zip"
           mv dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
           chmod +x /usr/local/bin/dependency-check
 
