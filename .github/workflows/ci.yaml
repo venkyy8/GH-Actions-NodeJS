@@ -27,23 +27,7 @@ jobs:
         run: |
           ls -al
 
-      - name: Step 6 - Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Step 7 - Login to Amazon ECR
-        env:
-          AWS_REGION: us-east-1  # Change to your desired region
+      - name: Step 6 - Dependency Check with OSWAP
         run: |
-          echo ${{ secrets.AWS_ACCESS_KEY_ID }} | aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 508511762335.dkr.ecr.$AWS_REGION.amazonaws.com
-
-      - name: Step 8 - Build Docker Image
-        run: |
-          docker build -t 508511762335.dkr.ecr.$AWS_REGION.amazonaws.com/github-action-ecr:latest .
-
-      - name: Step 9 - Push Docker Image to ECR
-        run: |
-          docker push 508511762335.dkr.ecr.$AWS_REGION.amazonaws.com/github-action-ecr:latest
-
-      - name: Step 10 - List Docker Images
-        run: |
-          docker images
+          # Make sure to replace `oswap` with the actual command for your OSWAP setup
+          oswap check --file pom.xml
