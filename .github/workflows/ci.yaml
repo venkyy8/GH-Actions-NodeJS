@@ -7,7 +7,8 @@ on:
 
 jobs:
   print-info:
-    runs-on: [self-hosted, venkat-server]  # This will run on your self-hosted runner named 'venkat-server'
+    #runs-on: [self-hosted, venkat-server]  # This will run on your self-hosted runner named 'venkat-server'
+    runs-on: [self-hosted, Linux, X64]
 
     steps:
       - name: Check out code
