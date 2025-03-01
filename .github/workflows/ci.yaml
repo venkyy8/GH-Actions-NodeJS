@@ -1,23 +1,26 @@
-name: Basic CI Workflow
+name: CI
+
+env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Define the GitHub token as an environment variable
 
 on:
   push:
     branches:
-      - main  # This triggers the workflow on push to the 'main' branch
+      - main
 
 jobs:
-  print-info:
-    #runs-on: [self-hosted, venkat-server]  # This will run on your self-hosted runner named 'venkat-server'
-    runs-on: [self-hosted, Linux, X64]
+  build:
+   runs-on: ubuntu-latest
+   steps:
 
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2  # This checks out the repository code
-
-      - name: Print working directory and server name
-        run: |
-          echo "Current working directory:"
-          pwd  # Prints the current directory where the job is running
-          
-          echo "Server name (hostname):"
-          hostname  # Prints the hostname of the server where the job is running
+   # Clone the second private repository using the personal access token
+   - name: Clone the second private repository
+      run: |
+        git clone https://$GH_TOKEN@github.com/venkyy8/springboot-frontback-end.git
+      # This uses the GH_TOKEN secret to authenticate
+   
+   # Display the current working directory and files (for debugging)
+   - name: Show current working directory
+      run: |
+        pwd  # Show the current working directory
+        ls -al  # List all files and directories in the current directory
