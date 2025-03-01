@@ -1,4 +1,4 @@
-name: CI
+name: CI 
 
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Define the GitHub token as an environment variable
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout the code from the current repository
+    # Checkout the code from the current repository 1
     - name: Check out the code from the current repository
       uses: actions/checkout@v2
 
