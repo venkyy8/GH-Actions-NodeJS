@@ -13,9 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout the code from the current repository 1
-    - name: Check out the code from the current repository
-      uses: actions/checkout@v2
 
     # Clone the second private repository using the personal access token
     - name: Clone the second private repository
