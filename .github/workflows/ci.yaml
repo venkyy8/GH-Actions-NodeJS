@@ -1,7 +1,7 @@
 name: CI
 
 env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Define the GitHub token as an environment variable
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Define the GitHub token as an environment variable
 
 on:
   push:
@@ -10,17 +10,21 @@ on:
 
 jobs:
   build:
-   runs-on: ubuntu-latest
-   steps:
+    runs-on: ubuntu-latest
 
-   # Clone the second private repository using the personal access token
-   - name: Clone the second private repository
+    steps:
+    # Checkout the code from the current repository
+    - name: Check out the code from the current repository
+      uses: actions/checkout@v2
+
+    # Clone the second private repository using the personal access token
+    - name: Clone the second private repository
       run: |
         git clone https://$GH_TOKEN@github.com/venkyy8/springboot-frontback-end.git
       # This uses the GH_TOKEN secret to authenticate
-   
-   # Display the current working directory and files (for debugging)
-   - name: Show current working directory
+    
+    # Display the current working directory and files (for debugging)
+    - name: Show current working directory
       run: |
         pwd  # Show the current working directory
         ls -al  # List all files and directories in the current directory
