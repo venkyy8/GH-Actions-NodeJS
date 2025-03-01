@@ -1,41 +1,22 @@
+name: Basic CI Workflow
+
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main  # This triggers the workflow on push to the 'main' branch
 
 jobs:
-  build-on-ubuntu:
-    runs-on: ubuntu-latest
+  print-info:
+    runs-on: [self-hosted, venkat-server]  # This will run on your self-hosted runner named 'venkat-server'
 
     steps:
-      - name: Step 1 - Checkout main branch from GitHub 
-        uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v2  # This checks out the repository code
 
-      - name: Step 2 - List all files in the repository after checkout
+      - name: Print working directory and server name
         run: |
-          ls -al
-
-      - name: Step 3 - Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-    
-      - name: Step 4 - Build Maven Project
-        run: |
-          mvn -B package --file pom.xml
-
-      - name: Step 5 - List files in the root directory after build
-        run: |
-          ls -al
-
-      - name: Step 6 - Install OWASP Dependency-Check
-        run: |
-          # Fetch the latest version dynamically
-          VERSION=$(curl -s https://api.github.com/repos/jeremylong/dependency-check-bin/releases/latest | jq -r .tag_name)
-          curl -LJO "https://github.com/jeremylong/dependency-check-bin/releases/latest/download/dependency-check-${VERSION}.zip"
-          unzip "dependency-check-${VERSION}.zip"
-          mv dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
-          chmod +x /usr/local/bin/dependency-check
-
-      - name: Step 7 - Run Dependency Check
-        run: |
-          dependency-check --project "My Project" --scan . --format ALL
+          echo "Current working directory:"
+          pwd  # Prints the current directory where the job is running
+          
+          echo "Server name (hostname):"
+          hostname  # Prints the hostname of the server where the job is running
