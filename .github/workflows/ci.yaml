@@ -7,6 +7,6 @@ jobs:
   print-run-url:
     runs-on: ubuntu-latest
     steps:
-      - name: Print run URL
+      - name: Print workflow run URL
         run: |
           echo "This workflow run URL is: ${{ github.run_url }}"
