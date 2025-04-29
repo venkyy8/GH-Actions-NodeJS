@@ -9,5 +9,4 @@ jobs:
     steps:
       - name: Print run URL
         run: |
-          echo "This workflow run URL is:"
-          echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "This workflow run URL is: ${{ github.run_url }}"
