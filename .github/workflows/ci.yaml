@@ -1,10 +1,10 @@
-name: Show Run URL
+name: CI
 
 on:
   workflow_dispatch:
 
 jobs:
-  print:
+  print-run-url:
     runs-on: ubuntu-latest
     steps:
       - name: Print run URL
