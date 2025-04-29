@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  print-run-url:
+  print-context:
     runs-on: ubuntu-latest
     steps:
       - name: Print all context variables
         run: |
           echo "All context variables:"
-          echo ${{ toJson(github) }}
+          echo "${{ toJson(github) }}"
