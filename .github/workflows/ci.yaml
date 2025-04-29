@@ -7,7 +7,7 @@ jobs:
   print-run-url:
     runs-on: ubuntu-latest
     steps:
-      - name: Print workflow run URL
+      - name: Print all context variables
         run: |
-          echo "This workflow run URL is: ${{ github.run_url }}"
-
+          echo "All context variables:"
+          echo ${{ toJson(github) }}
