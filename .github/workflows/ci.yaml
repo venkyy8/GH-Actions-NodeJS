@@ -1,27 +1,11 @@
-name: CI 
-
-env:
-  GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Define the GitHub token as an environment variable
+name: Show Run URL
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
-  build:
+  print:
     runs-on: ubuntu-latest
-
     steps:
-
-    # Clone the second private repository using the personal access token
-    - name: Clone the second private repository
-      run: |
-        git clone https://$GH_TOKEN@github.com/venkyy8/springboot-frontback-end.git
-      # This uses the GH_TOKEN secret to authenticate
-    
-    # Display the current working directory and files (for debugging)
-    - name: Show current working directory
-      run: |
-        pwd  # Show the current working directory
-        ls -al  # List all files and directories in the current directory
+      - name: Print run URL
+        run: echo "This workflow run URL is: ${{ github.run_url }}"
