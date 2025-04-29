@@ -8,4 +8,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print run URL
-        run: echo "This workflow run URL is: ${{ github.run_url }}"
+        run: echo "This workflow run URL is: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
