@@ -1,10 +1,10 @@
 name: Clone and Modify
 
 on:
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:
   push:
     branches:
-      - main          # Also triggers on push to main
+      - main
 
 jobs:
   clone-modify-push:
@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Ensures the token is used during checkout
 
       - name: Set up Git user
         run: |
@@ -28,6 +30,8 @@ jobs:
           echo "Modified on $(date)" >> file.txt
           git add file.txt
           git commit -m "Auto update on $(date +%d-%m-%Y)" || echo "Nothing to commit"
+
+          # Set up authentication
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
           git push origin "$NEW_BRANCH"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
