@@ -35,5 +35,4 @@ jobs:
 
       - name: Push changes
         run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB1_TOKEN }}@github.com/venkyy8/GitHub-Actions
           git push origin "$(date +'%d%m%Y')"
