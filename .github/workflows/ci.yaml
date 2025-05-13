@@ -13,33 +13,28 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB1_TOKEN }}
 
       - name: Set up Git user
         run: |
           git config --global user.name "venkyy8"
           git config --global user.email "venkyy82@gmail.com"
 
-      - name: Check if branch exists and switch/create
-        run: |
-          NEW_BRANCH="$(date +'%d%m%Y')"
-          echo "Using branch: $NEW_BRANCH"
+      - name: Check out existing branch or create new
+		run: |
+		  NEW_BRANCH="$(date +'%d%m%Y')"
+		  echo "Using branch: $NEW_BRANCH"
+		  
+   		  git fetch origin
+		  git checkout --track origin/$NEW_BRANCH 2>/dev/null || git checkout -b "$NEW_BRANCH"
 
-          git ls-remote --exit-code --heads origin "$NEW_BRANCH"
-          if [ $? -eq 0 ]; then
-            echo "Branch exists. Fetching and checking out."
-            git fetch origin "$NEW_BRANCH"
-            git checkout "$NEW_BRANCH"
-          else
-            echo "Branch does not exist. Creating it."
-            git checkout -b "$NEW_BRANCH"
-          fi
-
+      - name: Check out existing branch or create new
+	    run: |
           echo "Modified on $(date)" >> file.txt
           git add file.txt
           git commit -m "Auto update on $(date +%d-%m-%Y)" || echo "Nothing to commit"
-
+		  
+      - name: Check out existing branch or create new
+	    run: |
           # Set remote URL with token
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB1_TOKEN }}@github.com/venkyy8/GitHub-Actions
 
