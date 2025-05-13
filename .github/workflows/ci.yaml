@@ -1,13 +1,33 @@
-name: CI
+name: Clone and Modify
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Manual trigger
+  push:
+    branches:
+      - main          # Also triggers on push to main
 
 jobs:
-  print-context:
+  clone-modify-push:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Print all context variables
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Git user
         run: |
-          echo "All context variables:"
-          echo "${{ toJson(github) }}"
+          git config --global user.name "venkyy8"
+          git config --global user.email "venkyy82@gmail.com"
+
+      - name: Create branch, modify file, and push
+        run: |
+          NEW_BRANCH="$(date +'%d%m%Y')"
+          echo "Creating branch: $NEW_BRANCH"
+          git checkout -b "$NEW_BRANCH"
+
+          echo "Modified on $(date)" >> file.txt
+          git add file.txt
+          git commit -m "Auto update on $(date +%d-%m-%Y)" || echo "Nothing to commit"
+          git push origin "$NEW_BRANCH"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
