@@ -27,13 +27,13 @@ jobs:
    		  git fetch origin
 		  git checkout --track origin/$NEW_BRANCH 2>/dev/null || git checkout -b "$NEW_BRANCH"
 
-      - name: Check out existing branch or create new
+      - name: add-commit
 	    run: |
           echo "Modified on $(date)" >> file.txt
           git add file.txt
           git commit -m "Auto update on $(date +%d-%m-%Y)" || echo "Nothing to commit"
 		  
-      - name: Check out existing branch or create new
+      - name: push
 	    run: |
           # Set remote URL with token
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB1_TOKEN }}@github.com/venkyy8/GitHub-Actions
