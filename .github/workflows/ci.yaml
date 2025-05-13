@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # default token used here (safe)
 
       - name: Set up Git user
         run: |
@@ -32,9 +32,9 @@ jobs:
           git add file.txt
           git commit -m "Auto update on $(date +%d-%m-%Y)" || echo "Nothing to commit"
 
-      - name: Push changes
+      - name: Push changes with PAT
         env:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAT: ${{ secrets.GITHUB1_TOKEN }}
         run: |
-          git remote set-url origin https://x-access-token:$TOKEN@github.com/${{ github.repository }}
+          git remote set-url origin https://x-access-token:$PAT@github.com/${{ github.repository }}
           git push origin "$(date +'%d%m%Y')"
