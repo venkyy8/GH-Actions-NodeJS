@@ -34,9 +34,13 @@ jobs:
           git add file.txt
           git commit -m "Auto update on $(date +%d-%m-%Y)" || echo "Nothing to commit"
 
-      - name: Push changes with PAT
-        env:
-          PAT: ${{ secrets.GITHUB1_TOKEN }}
+      # - name: Push changes with PAT
+      #   env:
+      #     PAT: ${{ secrets.GITHUB1_TOKEN }}
+      #   run: |
+      #     git remote set-url origin https://x-access-token:$PAT@github.com/${{ github.repository }}
+      #     git push origin "$(date +'%d%m%Y')"
+      - name: Push changes with default GITHUB_TOKEN
         run: |
-          git remote set-url origin https://x-access-token:$PAT@github.com/${{ github.repository }}
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push origin "$(date +'%d%m%Y')"
