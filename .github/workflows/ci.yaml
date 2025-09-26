@@ -1,4 +1,4 @@
-name: Call Maven Build Workflow
+name: Build
 
 on:
   push:
