@@ -6,12 +6,6 @@ on:
       - main  # Trigger on push to main
   workflow_dispatch:
 
-env:
-  APT_UPDATE_CMD: sudo apt-get update
-  APT_INSTALL_MAVEN_CMD: sudo apt-get install maven -y
-  PROJECT_DIR: Project-Data
-  MAVEN_GOAL: install   # Note: no need to prefix with 'mvn' here, pass goal only
-
 jobs:
   clone-repo:
     runs-on: ubuntu-latest
@@ -23,7 +17,7 @@ jobs:
     needs: clone-repo
     uses: venkyy8/github-workflow/Building/action.yml@main
     with:
-      APT_UPDATE_CMD: ${{ env.APT_UPDATE_CMD }}
-      APT_INSTALL_MAVEN_CMD: ${{ env.APT_INSTALL_MAVEN_CMD }}
-      PROJECT_DIR: ${{ env.PROJECT_DIR }}
-      MAVEN_GOAL: ${{ env.MAVEN_GOAL }}
+      APT_UPDATE_CMD: "sudo apt-get update"
+      APT_INSTALL_MAVEN_CMD: "sudo apt-get install maven -y"
+      PROJECT_DIR: "Project-Data"
+      MAVEN_GOAL: "install"
