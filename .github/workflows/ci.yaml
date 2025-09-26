@@ -16,7 +16,7 @@ jobs:
 
   call-build:
     needs: clone-repo
-    uses: venkyy8/github-workflow/.github/workflows/action.yml@main
+    uses: venkyy8/github-workflow/action.yml@main
     with:
       APT_UPDATE_CMD: "sudo apt-get update"
       APT_INSTALL_MAVEN_CMD: "sudo apt-get install maven -y"
