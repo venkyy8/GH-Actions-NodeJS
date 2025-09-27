@@ -62,13 +62,15 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "deployment-service.yml"
           target: "/home/ubuntu/"
+
+      - name: Load kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > kubeconfig
+        env:
+          KUBECONFIG: ${{ github.workspace }}/kubeconfig
+
       
-      - name: Apply deployment on EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: 43.204.30.36
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            kubectl apply -f /home/ubuntu/deployment-service.yml
+      - name: Deploy to self-hosted cluster
+        run: kubectl --kubeconfig=kubeconfig apply -f deployment.yml
+
 
