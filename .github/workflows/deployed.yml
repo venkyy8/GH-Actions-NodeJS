@@ -1,5 +1,4 @@
-name: Build, Dockerize, Scan and Deploying into K8s Cluster
-
+name: CI/CD
 on:
   # push:
   #   branches:
