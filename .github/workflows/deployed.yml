@@ -39,5 +39,8 @@ jobs:
       - name: Build Docker image
         run: docker build -t venkyy82/gh-actions:1.0 .
 
+      - name: Run Trivy Docker Image Scan (Non-blocking)
+        run: trivy image venkyy82/gh-actions:1.0
+
       - name: List Docker images
         run: docker images
