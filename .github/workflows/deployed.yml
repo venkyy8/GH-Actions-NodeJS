@@ -1,4 +1,4 @@
-name: Build, Dockerize, and Scan
+name: Build, Dockerize, Scan and Deploying into K8s Cluster
 
 on:
   # push:
