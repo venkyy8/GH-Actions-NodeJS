@@ -64,7 +64,6 @@ jobs:
 
       - name: Replace Docker image tag in Kubernetes manifest
         run: |
-          # sed -i "s|venkyy82/gh-actions:1.0|venkyy82/gh-actions:${{ github.run_number }}|g" deployment-service.yml
           sed -i "s|image: venkyy82/gh-actions:.*|image: venkyy82/gh-actions:${{ github.run_number }}|g" deployment-service.yml
 
 
