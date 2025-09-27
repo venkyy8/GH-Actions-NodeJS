@@ -14,33 +14,33 @@ jobs:
       - name: Clone the repository
         uses: actions/checkout@v3
 
-      # - name: Update APT and install npm
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install npm -y
+      - name: Update APT and install npm
+        run: |
+          sudo apt-get update
+          sudo apt-get install npm -y
 
-      # - name: Install project dependencies
-      #   run: npm install
+      - name: Install project dependencies
+        run: npm install
 
-      # - name: Build the project
-      #   run: npm run build
+      - name: Build the project
+        run: npm run build
 
-      # - name: Install Trivy
-      #   run: |
-      #     sudo apt-get install wget apt-transport-https gnupg lsb-release -y
-      #     wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
-      #     echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
-      #     sudo apt-get update
-      #     sudo apt-get install trivy -y
+      - name: Install Trivy
+        run: |
+          sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy -y
 
-      # - name: Run Trivy File System Scan (Non-blocking)
-      #   run: trivy fs .
+      - name: Run Trivy File System Scan (Non-blocking)
+        run: trivy fs .
 
       - name: Build Docker image
         run: docker build -t venkyy82/gh-actions:${{ github.run_number }} .
 
-      # - name: Run Trivy Docker Image Scan (Non-blocking)
-      #   run: trivy image venkyy82/gh-actions:${{ github.run_number }}
+      - name: Run Trivy Docker Image Scan (Non-blocking)
+        run: trivy image venkyy82/gh-actions:${{ github.run_number }}
 
       - name: List Docker images
         run: docker images
@@ -62,7 +62,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "deployment-service.yml"
-          target: "/home/ubuntu/deployment-service.yml"
+          target: "/home/ubuntu/"
       
       - name: Apply deployment on EC2 via SSH
         uses: appleboy/ssh-action@v1.0.0
@@ -72,7 +72,4 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             kubectl apply -f /home/ubuntu/deployment-service.yml
-
-
-
 
