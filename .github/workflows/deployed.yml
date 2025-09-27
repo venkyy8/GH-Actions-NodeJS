@@ -51,4 +51,24 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: docker push venkyy82/gh-actions:${{ github.run_number }}
 
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'  # Adjust if needed
+
+      - name: Load kubeconfig from GitHub Secret
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > kubeconfig
+        env:
+          KUBECONFIG: ${{ github.workspace }}/kubeconfig
+
+      - name: Replace Docker image tag in Kubernetes manifest
+        run: |
+          sed -i "s|venkyy82/gh-actions:1.0|venkyy82/gh-actions:${{ github.run_number }}|g" deployment-service.yml
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl --kubeconfig=kubeconfig apply -f deployment-service.yml
+
+
 
