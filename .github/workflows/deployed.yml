@@ -1,38 +1,32 @@
-name: Build,Analyze,scan
+name: Build and Dockerize
 
 on:
   push:
     branches:
       - main
-
+  workflow_dispatch:  # allows manual triggering
 
 jobs:
-  build-analyze-scan:
-    name: Build
-    runs-on: [self-hosted]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis 
-  
-      - name: Deploy to container
-        run: | 
-          docker stop game
-          docker rm game
-        
-      - name: Update kubeconfig
-        run: aws eks --region ap-south-1 update-kubeconfig --name EKS_CLOUD
+  build:
+    runs-on: ubuntu-latest
 
-      - name: Deploy to kubernetes
-        run: kubectl delete -f deployment-service.yml
-  
-      - name: Send a Slack Notification
-        if: always()
-        uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#githubactions-eks'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v3
+
+      - name: Update APT and install npm
+        run: |
+          sudo apt-get update
+          sudo apt-get install npm -y
+
+      - name: Install project dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Build Docker image
+        run: docker build -t venkyy82/gh-actions:1.0 .
+
+      - name: List Docker images
+        run: docker images
