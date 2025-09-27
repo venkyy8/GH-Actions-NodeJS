@@ -1,10 +1,10 @@
-name: Build and Dockerize
+name: Build, Dockerize, and Scan
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:  # allows manual triggering
+  workflow_dispatch:
 
 jobs:
   build:
@@ -24,6 +24,17 @@ jobs:
 
       - name: Build the project
         run: npm run build
+
+      - name: Install Trivy
+        run: |
+          sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy -y
+
+      - name: Run Trivy File System Scan (Non-blocking)
+        run: trivy fs .
 
       - name: Build Docker image
         run: docker build -t venkyy82/gh-actions:1.0 .
