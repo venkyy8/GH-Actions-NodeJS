@@ -14,27 +14,27 @@ jobs:
       - name: Clone the repository
         uses: actions/checkout@v3
 
-      - name: Update APT and install npm
-        run: |
-          sudo apt-get update
-          sudo apt-get install npm -y
+      # - name: Update APT and install npm
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install npm -y
 
-      - name: Install project dependencies
-        run: npm install
+      # - name: Install project dependencies
+      #   run: npm install
 
-      - name: Build the project
-        run: npm run build
+      # - name: Build the project
+      #   run: npm run build
 
-      - name: Install Trivy
-        run: |
-          sudo apt-get install wget apt-transport-https gnupg lsb-release -y
-          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
-          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
-          sudo apt-get update
-          sudo apt-get install trivy -y
+      # - name: Install Trivy
+      #   run: |
+      #     sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+      #     wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
+      #     echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+      #     sudo apt-get update
+      #     sudo apt-get install trivy -y
 
-      - name: Run Trivy File System Scan (Non-blocking)
-        run: trivy fs .
+      # - name: Run Trivy File System Scan (Non-blocking)
+      #   run: trivy fs .
 
       - name: Build Docker image
         run: docker build -t venkyy82/gh-actions:${{ github.run_number }} .
@@ -51,25 +51,28 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: docker push venkyy82/gh-actions:${{ github.run_number }}
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'v1.28.0'  # Adjust if needed
-
-      - name: Load kubeconfig from GitHub Secret
-        run: |
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > kubeconfig
-        env:
-          KUBECONFIG: ${{ github.workspace }}/kubeconfig
-
-      - name: Replace Docker image tag in Kubernetes manifest
+      - name: Replace Docker image tag in deployment YAML
         run: |
           sed -i "s|image: venkyy82/gh-actions:.*|image: venkyy82/gh-actions:${{ github.run_number }}|g" deployment-service.yml
+      
+      - name: Copy deployment YAML to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 43.204.30.36
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "deployment-service.yml"
+          target: "/home/ubuntu/deployment-service.yml"
+      
+      - name: Apply deployment on EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: 43.204.30.36
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            kubectl apply -f /home/ubuntu/deployment-service.yml
 
-
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl --kubeconfig=kubeconfig apply -f deployment-service.yml
 
 
 
