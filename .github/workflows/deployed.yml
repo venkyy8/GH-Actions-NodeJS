@@ -37,10 +37,18 @@ jobs:
         run: trivy fs .
 
       - name: Build Docker image
-        run: docker build -t venkyy82/gh-actions:1.0 .
+        run: docker build -t venkyy82/gh-actions:${{ github.run_number }} .
 
       - name: Run Trivy Docker Image Scan (Non-blocking)
-        run: trivy image venkyy82/gh-actions:1.0
+        run: trivy image venkyy82/gh-actions:${{ github.run_number }}
 
       - name: List Docker images
         run: docker images
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Docker image to Docker Hub
+        run: docker push venkyy82/gh-actions:${{ github.run_number }}
+
+
