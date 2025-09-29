@@ -1,5 +1,7 @@
 name: CI/CD
+
 on:
+  # You can uncomment the below to trigger on push to main
   # push:
   #   branches:
   #     - main
@@ -53,24 +55,48 @@ jobs:
       - name: Replace Docker image tag in deployment YAML
         run: |
           sed -i "s|image: venkyy82/gh-actions:.*|image: venkyy82/gh-actions:${{ github.run_number }}|g" deployment-service.yml
-      
-      - name: Copy deployment YAML to EC2
-        uses: appleboy/scp-action@v0.1.7
+
+      - name: Upload modified YAML as artifact
+        uses: actions/upload-artifact@v4
         with:
-          host: 43.204.30.36
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "deployment-service.yml"
-          target: "/home/ubuntu/"
+          name: deployment-manifest
+          path: deployment-service.yml
 
-      - name: Load kubeconfig
+  deploy:
+    needs: build  # Depends on successful completion of build job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download deployment YAML artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-manifest
+          path: .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1  # Hardcoded region
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Update kubeconfig for EKS
         run: |
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > kubeconfig
-        env:
-          KUBECONFIG: ${{ github.workspace }}/kubeconfig
+          aws eks update-kubeconfig --name Demo --region ap-south-1
 
-      
-      - name: Deploy to self-hosted cluster
-        run: kubectl --kubeconfig=kubeconfig apply -f deployment.yml
+      - name: Deploy to EKS
+        run: |
+          kubectl apply -f deployment-service.yml
 
-
+      - name: Verify Deployment
+        run: |
+          kubectl rollout status deployment/htmlsampleproject-deployment
+          kubectl get all
